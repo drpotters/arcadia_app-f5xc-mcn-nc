@@ -9,7 +9,7 @@ if (isset($_SERVER['PHP_AUTH_USER']))
 	}
 }
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$domainName = $_SERVER['HTTP_HOST'];
+$domainName = "backend";
 ?>
   <div class="content-panel-close">
 	<i class="os-icon os-icon-close"></i>
@@ -32,7 +32,7 @@ $domainName = $_SERVER['HTTP_HOST'];
 					$string = file_get_contents($protocol.$domainName."/files/accounts.json");
 					$accounts = json_decode($string, true);
 					foreach ($accounts as $key)
-					{	
+					{
 						if($key["currency"]=="EUR")
 						{
 							$symbol = '€';
@@ -120,7 +120,7 @@ $domainName = $_SERVER['HTTP_HOST'];
 			$tranfer_list = json_decode($string, true);
 			$i = 0;
 			foreach ($tranfer_list as $key)
-			{	
+			{
 				if ($i>9)
 					continue;
 				echo'
@@ -142,4 +142,3 @@ $domainName = $_SERVER['HTTP_HOST'];
 	  </table>
 	</div>
   </div>
-

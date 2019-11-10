@@ -9,7 +9,7 @@ if (isset($_SERVER['PHP_AUTH_USER']))
 	}
 }
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$domainName = $_SERVER['HTTP_HOST'];
+$domainName = "backend";
 ?>
 
 <option id="select_1" value=1>
@@ -19,7 +19,7 @@ $domainName = $_SERVER['HTTP_HOST'];
 	$string = file_get_contents($protocol.$domainName."/files/accounts.json");
 	$accounts = json_decode($string, true);
 	foreach ($accounts as $key)
-	{	
+	{
 		if($key["currency"]=="EUR")
 		{
 			$symbol = '€';

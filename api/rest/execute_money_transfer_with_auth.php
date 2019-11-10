@@ -1,6 +1,13 @@
 <?php
 
-$authentication = true;
+$authentication = false;
+if (isset($_SERVER['PHP_AUTH_USER']))
+{
+	if ($_SERVER['PHP_AUTH_USER'] == "admin" && $_SERVER['PHP_AUTH_PW'] == "iloveblue")
+	{
+		$authentication = true;
+	}
+}
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 $domainName = "backend";
 

@@ -6,6 +6,14 @@ function authenticate() {
     exit;
 }
 
+if (!isset($_SERVER['PHP_AUTH_USER']))
+{
+    authenticate();
+}
+else
+{
+	if ($_SERVER['PHP_AUTH_USER'] == "admin" && $_SERVER['PHP_AUTH_PW'] == "iloveblue")
+	{
 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 		$domainName = "backend";
 
@@ -112,6 +120,14 @@ function authenticate() {
 
 			echo '{"status":"success","name":"'.$my_name.'", "qty":"'.$my_qty.'","amount":"'.$my_trans_value.'", "transid":"'.$my_trans_id.'"}';
 		}
+
+	}
+	else
+	{
+		header('HTTP/1.0 403 Forbidden');
+		die ("Wrong Username/Password");
+	}
+}
 
 
 ?>

@@ -14,7 +14,6 @@ else
 {
 	if ($_SERVER['PHP_AUTH_USER'] == "admin" && $_SERVER['PHP_AUTH_PW'] == "iloveblue")
 	{
-
 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 		$domainName = $_SERVER['HTTP_HOST'];
     $backend = "backend";
@@ -27,9 +26,13 @@ else
 				<div class="element-box-tp">
 				  <table class="table table-clean">
 					<tbody>';
-						sleep(2);
-						$string = file_get_contents($protocol.$backend."/files/stock_transactions.json");
-						$stock_tranfer_list = json_decode($string, true);
+
+						//$string = file_get_contents($protocol.$domainName."/files/stock_transactions.json");
+						$url = $protocol.$backend.'/files/stock_transactions.json';
+						$ch = curl_init($url);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+						$stock_transactions_result = curl_exec($ch);
+						$stock_tranfer_list = json_decode($stock_transactions_result, true);
 						$i = 0;
 						foreach ($stock_tranfer_list as $key)
 						{
@@ -43,7 +46,6 @@ else
 								$color = "text-success";
 								$sign = "+";
 							}
-
 							if ($i>7)
 								continue;
 							echo'<tr>

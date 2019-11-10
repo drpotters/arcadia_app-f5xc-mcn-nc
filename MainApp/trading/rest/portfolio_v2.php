@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 function authenticate() {
     header('WWW-Authenticate: Basic realm="Test Authentication System"');
@@ -10,14 +10,14 @@ function authenticate() {
 if (!isset($_SERVER['PHP_AUTH_USER']))
 {
     header('HTTP/1.1 504 Unauthenticated');
-} 
-else 
+}
+else
 {
 	if ($_SERVER['PHP_AUTH_USER'] == "admin" && $_SERVER['PHP_AUTH_PW'] == "iloveblue")
 	{
 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-		$domainName = $_SERVER['HTTP_HOST'];
-		
+		$domainName = "backend";
+
 		sleep(1);
 		$string = file_get_contents($protocol.$domainName."/files/stocks.json");
 		$stocks = json_decode($string, true);
@@ -79,8 +79,8 @@ else
 	else
 	{
 		header('HTTP/1.1 505 Wrong Credentials');
-	}	
-	
+	}
+
 }
 
 ?>

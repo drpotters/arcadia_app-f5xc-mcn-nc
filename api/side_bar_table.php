@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 $authentication = false;
 if (isset($_SERVER['PHP_AUTH_USER']))
@@ -9,7 +9,7 @@ if (isset($_SERVER['PHP_AUTH_USER']))
 	}
 }
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$domainName = $_SERVER['HTTP_HOST'];
+$domainName = "backend";
 ?>
 
 	  <table class="table table-compact smaller text-faded mb-0">
@@ -33,7 +33,7 @@ $domainName = $_SERVER['HTTP_HOST'];
 			$tranfer_list = json_decode($string, true);
 			$i = 0;
 			foreach ($tranfer_list as $key)
-			{	
+			{
 				if ($i>9)
 					continue;
 				echo'
