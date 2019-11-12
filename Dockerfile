@@ -15,13 +15,30 @@ RUN apt-get update && \
               rm -rf /var/lib/apt/lists/*
  
 # Arcadia
-COPY /MainApp/ /var/www/html/
-COPY /files/ /var/www/html/files/
-WORKDIR /var/www/html/
+COPY ./MainApp/ /var/www/html/
+COPY ./files/ /var/www/html/files/
+COPY ./api/ /var/www/html/api/
+COPY ./app3/ /var/www/html/app3/
+#WORKDIR /var/www/html/
 
 # System account and environment variables
 RUN useradd -r -u 1001 user
 RUN chown -RL user: /var/log/apache2/ /var/run/apache2/ /var/www/html/
 ENV PATH="/var/www/html:${PATH}"
- 
-# EXPOSE 80
+
+# Start Apache
+ENV APACHE_RUN_USER  www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR   /var/log/apache2
+ENV APACHE_PID_FILE  /var/run/apache2/apache2.pid
+ENV APACHE_RUN_DIR   /var/run/apache2
+ENV APACHE_LOCK_DIR  /var/lock/apache2
+ENV APACHE_LOG_DIR   /var/log/apache2
+
+RUN mkdir -p $APACHE_RUN_DIR
+RUN mkdir -p $APACHE_LOCK_DIR
+RUN mkdir -p $APACHE_LOG_DIR
+
+EXPOSE 80
+
+CMD ["/usr/sbin/apache2", "-D",  "FOREGROUND"]
