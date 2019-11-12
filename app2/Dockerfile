@@ -15,10 +15,8 @@ RUN apt-get update && \
               rm -rf /var/lib/apt/lists/*
  
 # Arcadia
-COPY ./MainApp/ /var/www/html/
-COPY ./files/ /var/www/html/files/
-COPY ./api/ /var/www/html/api/
-COPY ./app3/ /var/www/html/app3/
+COPY /api/ /var/www/html/api/
+
 #WORKDIR /var/www/html/
 
 # System account and environment variables
