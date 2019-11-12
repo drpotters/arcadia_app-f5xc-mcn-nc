@@ -1,42 +1,81 @@
-FROM debian:stable-slim
- 
-LABEL maintainer="Matthieu DIERICK" version="1.0.0"
-LABEL contact="matt262810@gmail.com"
- 
-# Core dependencies
-RUN apt-get update && \
-              apt-get install -y apache2 curl php7.3 php7.3-xml php7.3-zip zip && \
-              apt-get install -y python3 python3-pip && \
-              pip3 install python-docx requests xlsxwriter && \
-              apt-get remove -y python3-dev python3-pip && \
-              apt-get autoclean -y && \
-              apt-get autoremove -y && \
-              apt-get clean -y && \
-              rm -rf /var/lib/apt/lists/*
- 
-# Arcadia
+FROM ubuntu:18.04
+LABEL MAINTAINER Matthieu Dierick <m.dierick@f5.com>
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install apache, PHP, and supplimentary programs. openssh-server, curl, and lynx-cur are for debugging the container.
+ENV TZ=Europe/Paris
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apt-get update && apt-get install -yq --no-install-recommends \
+    apt-utils \
+    curl \
+    # Install git
+    git \
+    # Install apache
+    apache2 \
+    # Install php 7.2
+    libapache2-mod-php7.2 \
+    php7.2-cli \
+    php7.2-json \
+    php7.2-curl \
+    php7.2-fpm \
+    php7.2-gd \
+    php7.2-ldap \
+    php7.2-mbstring \
+    php7.2-mysql \
+    php7.2-soap \
+    php7.2-sqlite3 \
+    php7.2-xml \
+    php7.2-zip \
+    php7.2-intl \
+    php-imagick \
+    # Install tools
+    openssl \
+    nano \
+    tree \
+    curl \
+    graphicsmagick \
+    imagemagick \
+    ghostscript \
+    mysql-client \
+    iputils-ping \
+    locales \
+    sqlite3 \
+    ca-certificates \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+# to be able to use "nano" with shell on "docker exec -it [CONTAINER ID] bash"
+ENV TERM xterm
 
 COPY /app3/ /var/www/html/app3/
-#WORKDIR /var/www/html/
 
-# System account and environment variables
-RUN useradd -r -u 1001 user
-RUN chown -RL user: /var/log/apache2/ /var/run/apache2/ /var/www/html/
-ENV PATH="/var/www/html:${PATH}"
+# Enable apache mods.
+RUN a2enmod php7.2
+RUN a2enmod rewrite
+RUN apt-get install locales
+RUN locale-gen fr_FR.UTF-8
+RUN locale-gen en_US.UTF-8
 
-# Start Apache
-ENV APACHE_RUN_USER  www-data
-ENV APACHE_RUN_GROUP www-data
-ENV APACHE_LOG_DIR   /var/log/apache2
-ENV APACHE_PID_FILE  /var/run/apache2/apache2.pid
-ENV APACHE_RUN_DIR   /var/run/apache2
-ENV APACHE_LOCK_DIR  /var/lock/apache2
-ENV APACHE_LOG_DIR   /var/log/apache2
+# Update the PHP.ini file, enable <? ?> tags and quieten logging.
+RUN sed -i -e 's/^error_reporting\s*=.*/error_reporting = E_ALL/' /etc/php/7.2/apache2/php.ini
+RUN sed -i -e 's/^display_errors\s*=.*/display_errors = On/' /etc/php/7.2/apache2/php.ini
+RUN sed -i -e 's/^zlib.output_compression\s*=.*/zlib.output_compression = Off/' /etc/php/7.2/apache2/php.ini
 
-RUN mkdir -p $APACHE_RUN_DIR
-RUN mkdir -p $APACHE_LOCK_DIR
-RUN mkdir -p $APACHE_LOG_DIR
+RUN echo "ServerName localhost" | tee /etc/apache2/conf-available/servername.conf
+RUN a2enconf servername
+
+RUN a2dissite 000-default
+
+RUN chown -R www-data:www-data /var/www
+
+#RUN chgrp -R www-data /var/www
+#RUN find /var/www -type d -exec chmod 775 {} +
+#RUN find /var/www -type f -exec chmod 664 {} +
 
 EXPOSE 80
 
-CMD ["/usr/sbin/apache2", "-D",  "FOREGROUND"]
+WORKDIR /var/www/html
+
+HEALTHCHECK --interval=5s --timeout=3s --retries=3 CMD curl -f http://localhost || exit 1
+
+CMD apachectl -D FOREGROUND
