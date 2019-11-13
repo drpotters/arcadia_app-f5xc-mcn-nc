@@ -26,6 +26,8 @@ docker run -dit -h app2 --name=app2 --net=internal matt262810/arcadia-app2:noaut
 
 docker run -dit -h app2 --name=app2 --net=internal arcadia_app2
 
+docker run -dit -h app3 --name=app3 --net=internal arcadia_app3
+
 docker run -dit -h nginx --name=nginx --net=internal -p 80:80 -v full_path_to_nginx_conf_file:/etc/nginx/conf.d/default.conf nginx_custom:latest
 
 Use default.conf NGINX file for the NGINX API GW.
