@@ -21,15 +21,15 @@ docker run -dit -h mainapp --name=mainapp --net=internal registry.gitlab.com/mat
 //////////////////////
 
 
-docker run -dit -h mainapp --name=mainapp --net=internal registry.gitlab.com/mattdierick/arcadia-finance/backend:latest
+docker run -dit -h mainapp --name=backend --net=internal registry.gitlab.com/mattdierick/arcadia-finance/backend:latest
 
 //////////////////////
 
-docker run -dit -h app2 --name=mainapp --net=internal registry.gitlab.com/mattdierick/arcadia-finance/app2:latest
+docker run -dit -h app2 --name=app2 --net=internal registry.gitlab.com/mattdierick/arcadia-finance/app2:latest
 
 //////////////////////
 
-docker run -dit -h app3 --name=mainapp --net=internal registry.gitlab.com/mattdierick/arcadia-finance/app3:latest
+docker run -dit -h app3 --name=app3 --net=internal registry.gitlab.com/mattdierick/arcadia-finance/app3:latest
 
 //////////////////////
 
