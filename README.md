@@ -21,7 +21,7 @@ docker run -dit -h mainapp --name=mainapp --net=internal registry.gitlab.com/mat
 //////////////////////
 
 
-docker run -dit -h mainapp --name=backend --net=internal registry.gitlab.com/mattdierick/arcadia-finance/backend:latest
+docker run -dit -h backend --name=backend --net=internal registry.gitlab.com/mattdierick/arcadia-finance/backend:latest
 
 //////////////////////
 
