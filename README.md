@@ -4,6 +4,8 @@ Arcadia Finance Application
 
 ![picture](https://gitlab.com/MattDierick/arcadia-finance/raw/master/Micro%20Services%20architecture.png)
 
+Credentials are admin/iloveblue
+
 //////////////////////
 
 /api is App2
