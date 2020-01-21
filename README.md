@@ -2,7 +2,7 @@
 
 Arcadia Finance Application
 
-![picture](https://gitlab.com/MattDierick/arcadia-finance/blob/master/Micro%20Services%20architecture.png)
+![picture](https://gitlab.com/MattDierick/arcadia-finance/raw/master/Micro%20Services%20architecture.png)
 
 //////////////////////
 
