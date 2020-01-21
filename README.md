@@ -2,6 +2,8 @@
 
 Arcadia Finance Application
 
+![alt text](https://gitlab.com/MattDierick/arcadia-finance/blob/master/Micro%20Services%20architecture.png)
+
 //////////////////////
 
 /api is App2
