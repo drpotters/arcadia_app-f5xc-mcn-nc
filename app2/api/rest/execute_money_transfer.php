@@ -2,7 +2,7 @@
 
 $authentication = true;
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$domainName = "backend";
+$domainName = "backend.demo.internal";
 
 foreach (getallheaders() as $name => $value) {
 

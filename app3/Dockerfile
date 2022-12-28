@@ -1,19 +1,23 @@
-FROM ubuntu:18.04
-LABEL MAINTAINER Matthieu Dierick <m.dierick@f5.com>
+FROM ubuntu:20.04
+LABEL MAINTAINER Dave Potter <da.potter@f5.com>
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install apache, PHP, and supplimentary programs. openssh-server, curl, and lynx-cur are for debugging the container.
+# Create non-root group and user
+RUN addgroup --system shared-folder \
+    && adduser --system --home /var/cache/shared-folder --ingroup shared-folder --uid 1001 nonroot
+
+# Install nginx, PHP, and supplimentary programs. openssh-server, curl, and lynx-cur are for debugging the container.
 ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN apt-get update && apt-get install -yq --no-install-recommends \
+RUN apt-get update
+RUN apt install -yq --no-install-recommends software-properties-common
+RUN add-apt-repository ppa:ondrej/php
+RUN apt update
+RUN apt-get install -yq --no-install-recommends \
     apt-utils \
     curl \
-    # Install git
-    git \
-    # Install apache
-    apache2 \
-    # Install php 7.2
-    libapache2-mod-php7.2 \
+    # Install nginx
+    nginx \
     php7.2-cli \
     php7.2-json \
     php7.2-curl \
@@ -31,6 +35,7 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
     # Install tools
     openssl \
     nano \
+    vim \
     tree \
     curl \
     graphicsmagick \
@@ -38,9 +43,11 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
     ghostscript \
     mysql-client \
     iputils-ping \
+    net-tools \
     locales \
     sqlite3 \
     ca-certificates \
+    sudo \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
@@ -49,33 +56,36 @@ ENV TERM xterm
 
 COPY /app3/ /var/www/html/app3/
 
-# Enable apache mods.
-RUN a2enmod php7.2
-RUN a2enmod rewrite
 RUN apt-get install locales
-RUN locale-gen fr_FR.UTF-8
 RUN locale-gen en_US.UTF-8
 
-# Update the PHP.ini file, enable <? ?> tags and quieten logging.
-RUN sed -i -e 's/^error_reporting\s*=.*/error_reporting = E_ALL/' /etc/php/7.2/apache2/php.ini
-RUN sed -i -e 's/^display_errors\s*=.*/display_errors = On/' /etc/php/7.2/apache2/php.ini
-RUN sed -i -e 's/^zlib.output_compression\s*=.*/zlib.output_compression = Off/' /etc/php/7.2/apache2/php.ini
-
-RUN echo "ServerName localhost" | tee /etc/apache2/conf-available/servername.conf
-RUN a2enconf servername
-
-RUN a2dissite 000-default
+# Configure port 8080 and redirect logging
+COPY /nginx-default /etc/nginx/sites-available/default
+#RUN sed -i -e 's/80 def/8080 def/' /etc/nginx/sites-available/default
+RUN sed -i -re 's/\/var\/log\/nginx\/(access|error).log/\/dev\/stdout/' /etc/nginx/nginx.conf
+RUN sed -i -re '/^user www-data/d' /etc/nginx/nginx.conf
+RUN sed -i -re 's/^(listen =)(.*)/\1 9000/' /etc/php/7.2/fpm/pool.d/www.conf
 
 RUN chown -R www-data:www-data /var/www
+RUN chown www-data /var/lib/nginx
+RUN mkdir /run/php
+RUN chown www-data /run/php
+RUN chgrp www-data /run
+RUN chmod 775 /run
+RUN touch /var/log/php7.2-fpm.log
+RUN chown www-data /var/log/php7.2-fpm.log
 
-#RUN chgrp -R www-data /var/www
-#RUN find /var/www -type d -exec chmod 775 {} +
-#RUN find /var/www -type f -exec chmod 664 {} +
-
-EXPOSE 80
+EXPOSE 8080
 
 WORKDIR /var/www/html
 
-HEALTHCHECK --interval=5s --timeout=3s --retries=3 CMD curl -f http://localhost || exit 1
+#HEALTHCHECK --interval=5s --timeout=3s --retries=3 CMD curl -f http://localhost:8080 || exit 1
 
-CMD apachectl -D FOREGROUND
+RUN \
+    sed -i /etc/sudoers -re 's/^%sudo.*/%sudo ALL=(ALL:ALL) NOPASSWD: ALL/g' && \
+    sed -i /etc/sudoers -re 's/^root.*/root ALL=(ALL:ALL) NOPASSWD: ALL/g' && \
+    sed -i /etc/sudoers -re 's/^#includedir.*/## **Removed the include directive** ##/g' && \
+    echo "www-data ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+USER www-data
+CMD [ "sudo", "nginx", "-g", "daemon off;" ]

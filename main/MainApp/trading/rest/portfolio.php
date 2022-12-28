@@ -15,7 +15,7 @@ else
 	if ($_SERVER['PHP_AUTH_USER'] == "admin" && $_SERVER['PHP_AUTH_PW'] == "iloveblue")
 	{
 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-		$domainName = "backend";
+		$domainName = "backend.demo.internal";
 
 //		$string = file_get_contents($protocol.$domainName."/files/stocks.json");
 		$url = $protocol.$domainName.'/files/stocks.json';

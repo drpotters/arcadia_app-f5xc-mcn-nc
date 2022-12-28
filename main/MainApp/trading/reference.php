@@ -2,7 +2,7 @@
 
 	$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 	$domainName = $_SERVER['HTTP_HOST'];
-	$backend = "app3";	
+	$backend = "refer-a-friend.demo.internal";
 	
 	if(empty($_GET['user_name']) || empty($_GET['email']) || empty($_GET['bank_id']))
 	{

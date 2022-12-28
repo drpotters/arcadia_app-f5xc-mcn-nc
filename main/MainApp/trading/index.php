@@ -1662,7 +1662,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
 	
 		$.ajax({
 				type: "GET",
-				timeout:500,
+				timeout:2000,
 				url: "/api/lower_bar.php",
 				error: function(xhr, statusText) {$( "#lower_bar" ).show();},
 				success: function(data){  $("#lower_bar2" ).show();}
@@ -1672,7 +1672,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
 
 		$.ajax({
 				type: "GET",
-				timeout:1000,
+				timeout:2000,
 				url: "/api/side_bar_accounts.php",
 				success: function(data3){  $( "#account_select_2" ).html( data3);}
 				}
@@ -1680,7 +1680,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
 
 		$.ajax({
 				type: "GET",
-				timeout:500,
+				timeout:3000,
 				url: "/api/side_bar.php",
 				error: function(xhr, statusText) {$( ".side_bar_attributes" ).show();},
 				success: function(data2){  $( "#side_bar" ).html(data2);}

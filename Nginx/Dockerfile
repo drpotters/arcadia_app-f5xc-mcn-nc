@@ -24,15 +24,21 @@ RUN \
   rm /etc/nginx/sites-enabled/default
 
 # Define mountable directories.
-VOLUME ["/etc/nginx/sites-enabled", "/etc/nginx/certs", "/etc/nginx/conf.d", "/var/log/nginx", "/var/www/html"]
+#VOLUME ["/etc/nginx/sites-enabled", "/etc/nginx/certs", "/etc/nginx/conf.d", "/var/log/nginx", "/var/www/html"]
 
 # Define working directory.
 WORKDIR /etc/nginx
-#COPY default.conf /etc/nginx/conf.d/
+COPY default.conf /etc/nginx/conf.d/
+
+RUN sed -i -re 's/\/var\/log\/nginx\/(access|error).log/\/dev\/stdout/' /etc/nginx/nginx.conf && \
+  sed -i -re '/^user www-data/d' /etc/nginx/nginx.conf && \
+  touch /var/log/nginx/error.log && \
+  chmod 666 /var/log/nginx/error.log && \
+  chmod 777 /var/lib/nginx /run /var/log
 
 # Define default command.
-CMD ["nginx"]
+#CMD ["nginx"]
 
 # Expose ports.
-EXPOSE 80
+EXPOSE 8080
 #EXPOSE 443

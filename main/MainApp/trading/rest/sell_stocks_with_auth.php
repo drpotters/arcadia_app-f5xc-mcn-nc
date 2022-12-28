@@ -15,7 +15,7 @@ else
 	if ($_SERVER['PHP_AUTH_USER'] == "admin" && $_SERVER['PHP_AUTH_PW'] == "iloveblue")
 	{
 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-		$domainName = "backend";		
+		$domainName = "backend.demo.internal";
 		$_POST = json_decode(file_get_contents('php://input'), true);
 
 		$variables_set ="on";
