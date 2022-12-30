@@ -61,6 +61,7 @@ RUN locale-gen en_US.UTF-8
 
 # Configure port 8080 and redirect logging
 COPY /nginx-default /etc/nginx/sites-available/default
+COPY /start.sh /start.sh
 #RUN sed -i -e 's/80 def/8080 def/' /etc/nginx/sites-available/default
 RUN sed -i -re 's/\/var\/log\/nginx\/(access|error).log/\/dev\/stdout/' /etc/nginx/nginx.conf
 RUN sed -i -re '/^user www-data/d' /etc/nginx/nginx.conf
@@ -88,4 +89,4 @@ RUN \
     echo "www-data ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 USER www-data
-CMD [ "sudo", "nginx", "-g", "daemon off;" ]
+CMD [ "/start.sh" ]

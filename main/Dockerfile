@@ -95,4 +95,4 @@ RUN \
     echo "www-data ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 USER www-data
-CMD [ "nginx", "-g", "daemon off;" ]
+CMD [ "/start.sh" ]
