@@ -50,31 +50,36 @@ RUN apt-get install -yq --no-install-recommends \
     sudo \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-
 # to be able to use "nano" with shell on "docker exec -it [CONTAINER ID] bash"
 ENV TERM xterm
 
-COPY /app3/ /var/www/html/app3/
+COPY /app3/ /var/www/html/api
 
 RUN apt-get install locales
 RUN locale-gen en_US.UTF-8
 
-# Configure port 8080 and redirect logging
+# Configure port 8080 and redirect logging to console
 COPY /nginx-default /etc/nginx/sites-available/default
 COPY /start.sh /start.sh
 #RUN sed -i -e 's/80 def/8080 def/' /etc/nginx/sites-available/default
 RUN sed -i -re 's/\/var\/log\/nginx\/(access|error).log/\/dev\/stdout/' /etc/nginx/nginx.conf
 RUN sed -i -re '/^user www-data/d' /etc/nginx/nginx.conf
+RUN sed -i -re 's/(.*)(www-data)$/;\0/' /etc/php/7.2/fpm/pool.d/www.conf
 RUN sed -i -re 's/^(listen =)(.*)/\1 9000/' /etc/php/7.2/fpm/pool.d/www.conf
+#RUN sed -i -re 's/^(user = )(.*)/;\0/' /etc/php/7.2/fpm/pool.d/www.conf
+#RUN sed -i -re 's/^(group = )(.*)/;\0/' /etc/php/7.2/fpm/pool.d/www.conf
 
 RUN chown -R www-data:www-data /var/www
 RUN chown www-data /var/lib/nginx
+RUN chmod -R 777 /var/lib/nginx /var/lib/php/sessions /etc/php
 RUN mkdir /run/php
 RUN chown www-data /run/php
-RUN chgrp www-data /run
-RUN chmod 775 /run
-RUN touch /var/log/php7.2-fpm.log
-RUN chown www-data /var/log/php7.2-fpm.log
+RUN chmod 666 /etc/php/7.2/fpm/pool.d/www.conf
+#RUN chgrp www-data /run
+RUN chmod 777 /run /run/php /var/log
+RUN touch /var/log/php7.2-fpm.log /var/log/php-fpm.log
+RUN chmod 666 /var/log/php7.2-fpm.log /var/log/php-fpm.log /var/log/nginx/error.log
+#RUN chown www-data /var/log/php7.2-fpm.log
 
 EXPOSE 8080
 
@@ -89,4 +94,5 @@ RUN \
     echo "www-data ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 USER www-data
+#CMD [ "sudo", "nginx", "-g", "daemon off;" ]
 CMD [ "/start.sh" ]
