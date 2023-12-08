@@ -45,6 +45,11 @@ server {
 
 	server_name _;
 
+        location ^~ /app3 {
+                proxy_pass http://refer-a-friend.demo.internal/;
+                proxy_http_version 1.1;
+        }
+
 	location / {
 		# First attempt to serve request as file, then
 		# as directory, then fall back to displaying a 404.

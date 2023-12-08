@@ -53,7 +53,7 @@ RUN apt-get install -yq --no-install-recommends \
 # to be able to use "nano" with shell on "docker exec -it [CONTAINER ID] bash"
 ENV TERM xterm
 
-COPY /app3/ /var/www/html/api
+COPY /app3/ /var/www/html/
 
 RUN apt-get install locales
 RUN locale-gen en_US.UTF-8
@@ -64,7 +64,7 @@ COPY /start.sh /start.sh
 #RUN sed -i -e 's/80 def/8080 def/' /etc/nginx/sites-available/default
 RUN sed -i -re 's/\/var\/log\/nginx\/(access|error).log/\/dev\/stdout/' /etc/nginx/nginx.conf
 RUN sed -i -re '/^user www-data/d' /etc/nginx/nginx.conf
-RUN sed -i -re 's/(.*)(www-data)$/;\0/' /etc/php/7.2/fpm/pool.d/www.conf
+#RUN sed -i -re 's/(.*)(www-data)$/;\0/' /etc/php/7.2/fpm/pool.d/www.conf
 RUN sed -i -re 's/^(listen =)(.*)/\1 9000/' /etc/php/7.2/fpm/pool.d/www.conf
 #RUN sed -i -re 's/^(user = )(.*)/;\0/' /etc/php/7.2/fpm/pool.d/www.conf
 #RUN sed -i -re 's/^(group = )(.*)/;\0/' /etc/php/7.2/fpm/pool.d/www.conf
