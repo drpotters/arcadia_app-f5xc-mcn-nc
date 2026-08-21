@@ -1,5 +1,17 @@
 <?php
 
+if (!function_exists('getallheaders')) {
+    function getallheaders() {
+        $headers = [];
+        foreach ($_SERVER as $name => $value) {
+            if (substr($name, 0, 5) == 'HTTP_') {
+                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+            }
+        }
+        return $headers;
+    }
+}
+
 $authentication = false;
 if (isset($_SERVER['PHP_AUTH_USER']))
 {
@@ -9,7 +21,7 @@ if (isset($_SERVER['PHP_AUTH_USER']))
 	}
 }
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$domainName = "backend";
+$domainName = getenv('BACKEND_NAME') ?: "backend.demo.internal";
 
 foreach (getallheaders() as $name => $value) {
 

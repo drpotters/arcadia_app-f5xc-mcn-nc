@@ -5,6 +5,7 @@ LABEL MAINTAINER="Dave Potter <da.potter@f5.com>"
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Europe/Paris"
 ENV TERM="xterm"
+ENV BACKEND_NAME="backend.demo.internal"
 
 # Create non-root group and user
 RUN addgroup --system shared-folder \
@@ -63,7 +64,8 @@ COPY /php-fpm-use-www-data.sh /php-fpm-use-www-data.sh
 # Use www-data username for nonroot environments
 RUN sed -i -re 's/\/var\/log\/nginx\/(access|error).log/\/dev\/stdout/' /etc/nginx/nginx.conf \
     && sed -i -re 's/^(listen =)(.*)/\1 9000/' /etc/php/7.2/fpm/pool.d/www.conf \
-    && sed -i -re 's/^(display_startup_errors =) Off/\1 On/' /etc/php/7.2/fpm/php.ini
+    && sed -i -re 's/^(display_startup_errors =) Off/\1 On/' /etc/php/7.2/fpm/php.ini \
+    && sed -i -re 's/^;?clear_env = .*/clear_env = no/' /etc/php/7.2/fpm/pool.d/www.conf
 
 # Group permissions and directory creation
 RUN chown -R www-data:www-data /var/www \
