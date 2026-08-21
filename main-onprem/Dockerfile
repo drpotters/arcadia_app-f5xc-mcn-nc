@@ -69,7 +69,7 @@ RUN sed -i -re 's/\/var\/log\/nginx\/(access|error).log/\/dev\/stdout/' /etc/ngi
 # Group permissions and directory creation
 RUN chown -R www-data:www-data /var/www \
     && chown www-data /var/lib/nginx \
-    && chmod 777 /var/lib/nginx \
+    && chmod 777 /var/lib/nginx /var/www/html/trading/documents \
     && mkdir -p /run/php \
     && chown www-data /run/php \
     && chmod 666 /etc/php/7.2/fpm/pool.d/www.conf \
