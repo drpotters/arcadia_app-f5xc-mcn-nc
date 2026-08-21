@@ -1,4 +1,7 @@
 <?php
+$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+$domainName = "backend.demo.internal";
+
 $_POST = json_decode(file_get_contents('php://input'), true);
 
 $variables_set ="on";
@@ -40,7 +43,7 @@ else
 }
 $my_trans_id = rand(300000000,999999999);
 
-$string = file_get_contents("accounts.json");
+$string = file_get_contents($protocol.$domainName."/files/accounts.json");
 $account_list = json_decode($string, true);
 if (($account_list[$_POST["account"]]['amount'] - $my_amount)>=0)
 {
@@ -48,16 +51,18 @@ if (($account_list[$_POST["account"]]['amount'] - $my_amount)>=0)
 	echo '{"name":"'.$_POST["friend"].'", "status":"success","amount":"'.$_POST["amount"].'", "currency":"'.$_POST["currency"].'", "transid":"'.$my_trans_id.'", "msg":"The money transfer has been successfully completed "}';	
 	
 	$account_list[$_POST["account"]]['amount'] = $new_amount;
-	$my_account_file = fopen("accounts.json", "w") or die("Unable to open file!");
-
-	fwrite($my_account_file, json_encode($account_list));	
-	fclose($my_account_file);
+	
+	$url = $protocol.$domainName.'/files/accounts.php';
+	$ch = curl_init($url);
+	$jsonDataEncoded = json_encode($account_list);
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+	$result = curl_exec($ch);
 	
 
-	$money = file_get_contents("money_transfer.json");
+	$money = file_get_contents($protocol.$domainName."/files/money_transfer.json");
 	$tranfer_list = json_decode($money, true);
-
-	$myfile = fopen("money_transfer.json", "w") or die("Unable to open file!");
 
 	$my_new_array = array();
 	$array =  array (
@@ -71,8 +76,14 @@ if (($account_list[$_POST["account"]]['amount'] - $my_amount)>=0)
 	{
 		array_push($my_new_array,$key);
 	}
-	fwrite($myfile, json_encode($my_new_array));
-	fclose($myfile);
+	
+	$url = $protocol.$domainName.'/files/money_transfer.php';
+	$ch = curl_init($url);
+	$jsonDataEncoded = json_encode($my_new_array);
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+	$result = curl_exec($ch);
 
 	
 }

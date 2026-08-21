@@ -1572,7 +1572,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
 
 		$.ajax({
 				type: "GET",
-				timeout:500,
+				timeout:1000,
 				url: "/app3/index.php",
 				error: function(xhr, statusText) {$("#app3_2" ).show(); },
 				success: function(data){ $("#app3_1" ).show(); }
