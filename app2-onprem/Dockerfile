@@ -55,10 +55,10 @@ COPY /start.sh /start.sh
 COPY /php-fpm-use-www-data.sh /php-fpm-use-www-data.sh
 
 # Group sed commands to optimize image layers
-RUN sed -i -re 's/\/var\/log\/nginx\/(access|error).log/\/dev\/stdout/' /etc/nginx/nginx.conf \
-    && sed -i -re '/^user www-data/d' /etc/nginx/nginx.conf \
-    && sed -i -re 's/(.*)(www-data)$/;\0/' /etc/php/7.2/fpm/pool.d/www.conf \
-    && sed -i -re 's/^(listen =)(.*)/\1 9000/' /etc/php/7.2/fpm/pool.d/www.conf
+#RUN sed -i -re 's/\/var\/log\/nginx\/(access|error).log/\/dev\/stdout/' /etc/nginx/nginx.conf \
+#    && sed -i -re '/^user www-data/d' /etc/nginx/nginx.conf \
+#    && sed -i -re 's/(.*)(www-data)$/;\0/' /etc/php/7.2/fpm/pool.d/www.conf \
+#    && sed -i -re 's/^(listen =)(.*)/\1 9000/' /etc/php/7.2/fpm/pool.d/www.conf
 
 # Use www-data username for nonroot environments
 RUN sed -i -re 's/\/var\/log\/nginx\/(access|error).log/\/dev\/stdout/' /etc/nginx/nginx.conf \
