@@ -7,7 +7,7 @@ $hits =0;
 foreach($scan as $file)
 {
 	
-	if ($file != "." && $file != "..")
+	if ($file != "." && $file != ".." || ".gitignore")
     {
 		array_push ($doc, $file);
 		$hits ++;
