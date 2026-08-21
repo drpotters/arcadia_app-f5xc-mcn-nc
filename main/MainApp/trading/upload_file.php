@@ -1,6 +1,6 @@
 <?php
 
-if(!empty($_FILES)) 
+if(!empty($_FILES) && isset($_FILES["fileToUpload"]) && !empty($_FILES["fileToUpload"]["name"])) 
 {
 	echo $_FILES["fileToUpload"]["name"];
 	echo "<br>";
