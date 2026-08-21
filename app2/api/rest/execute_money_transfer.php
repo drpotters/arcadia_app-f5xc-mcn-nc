@@ -14,7 +14,7 @@ if (!function_exists('getallheaders')) {
 
 $authentication = true;
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$domainName = "backend.demo.internal";
+$domainName = getenv('BACKEND_NAME') ?: "backend.demo.internal";
 
 foreach (getallheaders() as $name => $value) {
 

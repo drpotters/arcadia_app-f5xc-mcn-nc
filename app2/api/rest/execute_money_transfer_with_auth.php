@@ -21,7 +21,7 @@ if (isset($_SERVER['PHP_AUTH_USER']))
 	}
 }
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$domainName = "backend";
+$domainName = getenv('BACKEND_NAME') ?: "backend.demo.internal";
 
 foreach (getallheaders() as $name => $value) {
 
