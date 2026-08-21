@@ -22,7 +22,7 @@ $scan = scandir($dir);
 
 foreach($scan as $file)
 {
-	if (!is_dir($dir.$file) and !($file=="." || $file==".."))
+	if (!is_dir($dir.$file) and !($file=="." || $file==".." || $file==".gitignore"))
     {
 		$docs_num ++;
     }

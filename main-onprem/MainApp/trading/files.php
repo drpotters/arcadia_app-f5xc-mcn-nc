@@ -9,7 +9,7 @@ echo '{"file_names":[';
 
 foreach($scan as $file)
 {
-	if (!is_dir($dir.$file) and !($file=="." || $file==".."))
+	if (!is_dir($dir.$file) and !($file=="." || $file==".." || $file==".gitignore"))
     {
 		if ($docs_num>0)
 			echo ',';
